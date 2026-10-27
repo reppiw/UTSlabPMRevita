@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/quiz_provider.dart';
 import '../utils/responsive.dart';
 import '../widgets/primary_button.dart';
+import 'quiz_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -36,24 +37,20 @@ class _HomePageState extends State<HomePage> {
     quiz.setUserName(_nameController.text);
     quiz.resetQuiz();
 
-    // belum pindah halaman.
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Nama tersimpan: ${quiz.userName}')),
     );
 
-    // TODO Tahap 6: aktifkan navigasi di bawah ini
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (_) => const QuizPage()),
-    // );
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const QuizPage()),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final r = Responsive(context);
     final primary = Theme.of(context).colorScheme.primary;
-
-    final imageHeight = r.isLandscape ? r.h(28) : r.h(24);
 
     return Scaffold(
       body: SafeArea(
@@ -65,12 +62,6 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'assets/images/quiz_logo.png',
-                    height: imageHeight,
-                    fit: BoxFit.contain,
-                  ),
-                  SizedBox(height: r.h(3)),
                   Text(
                     'Kuis Pilihan Ganda',
                     textAlign: TextAlign.center,
