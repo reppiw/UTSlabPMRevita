@@ -7,9 +7,7 @@ class QuizProvider extends ChangeNotifier {
   String _userName = '';
   int _currentIndex = 0;
 
-  // Jawaban pengguna per soal. null = belum dijawab.
-  final List<int?> _answers =
-      List<int?>.filled(dummyQuestions.length, null);
+  List<int?> _answers = List<int?>.filled(dummyQuestions.length, null);
 
   // ---------- GETTER ----------
   String get userName => _userName;
@@ -67,9 +65,7 @@ class QuizProvider extends ChangeNotifier {
   /// Mulai ulang kuis. Nama dipertahankan agar bisa main lagi.
   void resetQuiz() {
     _currentIndex = 0;
-    for (int i = 0; i < _answers.length; i++) {
-      _answers[i] = null;
-    }
+    _answers = List<int?>.filled(dummyQuestions.length, null);
     notifyListeners();
   }
 

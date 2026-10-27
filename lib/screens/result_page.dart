@@ -61,12 +61,17 @@ class ResultPage extends StatelessWidget {
           style: TextStyle(fontSize: r.sp(4.5), fontWeight: FontWeight.w500),
         ),
         SizedBox(height: r.h(2)),
-        Text(
-          '${quiz.score}/${quiz.totalQuestions}',
-          style: TextStyle(
-            fontSize: r.sp(16),
-            fontWeight: FontWeight.bold,
-            color: primary,
+        TweenAnimationBuilder<double>(
+          tween: Tween<double>(begin: 0, end: quiz.score.toDouble()),
+          duration: const Duration(milliseconds: 1200),
+          curve: Curves.easeOut,
+          builder: (context, value, _) => Text(
+            '${value.round()}/${quiz.totalQuestions}',
+            style: TextStyle(
+              fontSize: r.sp(16),
+              fontWeight: FontWeight.bold,
+              color: primary,
+            ),
           ),
         ),
         Text(
