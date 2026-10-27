@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/quiz_provider.dart';
 import '../utils/responsive.dart';
 import '../widgets/primary_button.dart';
+import 'result_page.dart';
 
 class QuizPage extends StatelessWidget {
   const QuizPage({super.key});
@@ -10,24 +11,9 @@ class QuizPage extends StatelessWidget {
   static const _labels = ['A', 'B', 'C', 'D', 'E', 'F'];
 
   void _finish(BuildContext context) {
-    final quiz = context.read<QuizProvider>();
-
-    // TODO Tahap 7: ganti dialog ini dengan navigasi ke ResultPage.
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Kuis selesai'),
-        content: Text(
-          '${quiz.userName}, skormu ${quiz.score}/${quiz.totalQuestions} '
-          '(${quiz.scorePercent})',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Tutup'),
-          ),
-        ],
-      ),
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const ResultPage()),
     );
   }
 
@@ -59,11 +45,15 @@ class QuizPage extends StatelessWidget {
       ],
     );
 
-    final questionText = Text(
-      question.text,
-      style: TextStyle(
-        fontSize: r.sp(5.2),
-        fontWeight: FontWeight.bold,
+    final questionText = SizedBox(
+      width: double.infinity,
+      child: Text(
+        question.text,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: r.sp(5.2),
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
 
@@ -152,7 +142,7 @@ class QuizPage extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(r.w(5)),
+          padding: EdgeInsets.fromLTRB(r.w(6), r.h(3), r.w(6), r.h(38)),
           child: r.isLandscape
               // Landscape: soal di kiri, pilihan di kanan.
               ? Row(
