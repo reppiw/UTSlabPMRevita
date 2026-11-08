@@ -12,6 +12,7 @@ class QuizPage extends StatelessWidget {
   const QuizPage({super.key});
 
   void _finish(BuildContext context) {
+    context.read<QuizProvider>().saveToHistory();
     Navigator.pushReplacement(
       context,
       FadeSlideRoute(page: const ResultPage()),

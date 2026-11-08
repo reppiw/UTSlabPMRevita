@@ -38,7 +38,7 @@ class ResultPage extends StatelessWidget {
   }
 
   void _backToHome(BuildContext context) {
-    context.read<QuizProvider>().resetAll();
+    context.read<QuizProvider>().resetQuiz();
     Navigator.popUntil(context, (route) => route.isFirst);
   }
 

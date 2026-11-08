@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/app_navbar.dart';
 import 'history_screen.dart';
 import 'home_screen.dart';
+import 'profile_screen.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -20,6 +21,7 @@ class _MainShellState extends State<MainShell> {
   static const _pages = <Widget>[
     HomePage(),
     HistoryPage(),
+    ProfilePage(),
   ];
 
   int _index = 0;
