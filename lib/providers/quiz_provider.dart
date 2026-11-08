@@ -129,4 +129,9 @@ class QuizProvider extends ChangeNotifier {
     );
     notifyListeners();
   }
+
+  void clearHistory() {
+    _history.clear();
+    notifyListeners();
+  }
 }
