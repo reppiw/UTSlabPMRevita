@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/quiz_provider.dart';
 import '../utils/responsive.dart';
+import '../utils/page_transition.dart';
 import '../widgets/primary_button.dart';
 import 'quiz_page.dart';
 
@@ -43,7 +44,7 @@ class _HomePageState extends State<HomePage> {
 
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => const QuizPage()),
+      FadeSlideRoute(page: const QuizPage())
     );
   }
 
@@ -62,6 +63,11 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Image.asset(
+                    'lib/assets/images/icon22.png',
+                    width: r.w(30),
+                    height: r.w(30),
+                  ),
                   Text(
                     'Kuis Pilihan Ganda',
                     textAlign: TextAlign.center,

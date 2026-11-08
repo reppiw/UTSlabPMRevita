@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/quiz_provider.dart';
 import '../utils/responsive.dart';
+import '../utils/page_transition.dart';
 import '../widgets/option_tile.dart';
 import '../widgets/primary_button.dart';
 import '../widgets/progress_header.dart';
@@ -13,7 +14,7 @@ class QuizPage extends StatelessWidget {
   void _finish(BuildContext context) {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (_) => const ResultPage()),
+      FadeSlideRoute(page: const ResultPage()),
     );
   }
 
@@ -38,7 +39,7 @@ class QuizPage extends StatelessWidget {
         child: Text(
           question.text,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontSize: r.sp(5.2),
             fontWeight: FontWeight.bold,
           ),
@@ -94,7 +95,7 @@ class QuizPage extends StatelessWidget {
             r.w(5),
             r.w(5),
             r.w(5),
-            r.isLandscape ? r.h(4) : r.h(35), // jarak bawah tombol
+            r.isLandscape ? r.h(4) : r.h(16), // jarak bawah tombol
           ),
           child: r.isLandscape
               // Landscape: soal di kiri, pilihan di kanan.
