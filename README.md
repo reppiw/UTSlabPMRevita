@@ -11,27 +11,27 @@ HexenQ adalah aplikasi kuis pilihan ganda berbasis Flutter. Pengguna dapat mengi
 
 ## Fitur yang tersedia:
 
-1. Login dan Register
+1. Login dan Register: 
   Daftar akun (nama, email, kata sandi) dan masuk, dengan validasi form.
   Pesan error jika email sudah terdaftar, format email salah, atau kata sandi salah.
 
-2. Beranda
+2. Beranda: 
   Berisi kotak kuis populer yang diurutkan dari jumlah pemain terbanyak dan daftar semua kategori.
 
-3. Kuis
+3. Kuis: 
   Memilih tingkat kesulitan dengan slider 1 sampai 5 dan jumlah soal menyesuaikan level, mengerjakan quiz dengan memilih salah satu dari pilihan yg tersedia.
   Terdapat progress bar yg menampilkan soal yang sudah dikerjakan dan belum.
   Tombol Kembali dan Lanjut/Selesai, jawaban tetap tersimpan saat kembali ke soal sebelumnya.
 
-4. Hasil
+4. Hasil: 
   Skor, persentase, dan pesan sesuai nilai.
   Gambar hasil berbeda untuk nilai tinggi, sedang, dan rendah.
   Pilihan Main Lagi atau Kembali ke Awal.
 
-5. Riwayat
+5. Riwayat: 
    Berisi daftar kuis yang pernah dikerjakan: kategori, level, skor, tanggal, dan jam.
 
-6. Profil
+6. Profil: 
   Avatar inisial, nama, email, dan statistik (kuis dikerjakan, rata-rata, skor terbaik).
   Pilihan mode Terang/Gelap dan 5 tema warna yang dapat dipilih.
   Hapus riwayat dan keluar akun.
