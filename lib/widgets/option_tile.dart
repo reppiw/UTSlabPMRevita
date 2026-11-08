@@ -7,6 +7,7 @@ class OptionTile extends StatelessWidget {
   final String label; // huruf opsi: A, B, C, D
   final String text;
   final bool isSelected;
+  final int accentIndex;
   final VoidCallback onTap;
 
   const OptionTile({
@@ -15,20 +16,25 @@ class OptionTile extends StatelessWidget {
     required this.text,
     required this.isSelected,
     required this.onTap,
+    this.accentIndex = 0,
   });
 
   @override
   Widget build(BuildContext context) {
     final r = Responsive(context);
-    final accent = isSelected ? AppColors.primary : AppColors.border;
+    final accent = AppColors.accent(accentIndex);
+
+    // Belum dipilih: garis tepi warna aksen yang dilembutkan.
+    final softEdge = Color.lerp(AppColors.border, accent.main, 0.55)!;
+    final edge = isSelected ? accent.main : softEdge;
 
     return Padding(
       padding: EdgeInsets.only(bottom: r.sp(2.2)),
       child: ChunkyContainer(
         onTap: onTap,
-        color: isSelected ? AppColors.selectedFill : AppColors.surface,
-        shadowColor: accent,
-        borderColor: accent,
+        color: isSelected ? accent.soft : AppColors.surface,
+        shadowColor: isSelected ? accent.shadow : softEdge,
+        borderColor: edge,
         borderWidth: r.sp(0.5),
         depth: r.sp(1),
         radius: r.sp(4),
@@ -39,24 +45,20 @@ class OptionTile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // Kotak huruf opsi
             Container(
               width: r.sp(8.5),
               height: r.sp(8.5),
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: isSelected ? AppColors.primary : AppColors.surface,
+                color: accent.main,
                 borderRadius: BorderRadius.circular(r.sp(2.5)),
-                border: Border.all(color: accent, width: r.sp(0.5)),
               ),
               child: Text(
                 label,
                 style: TextStyle(
                   fontSize: r.sp(3.8),
                   fontWeight: FontWeight.w700,
-                  color: isSelected
-                      ? AppColors.onPrimary
-                      : AppColors.textMuted,
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -67,9 +69,7 @@ class OptionTile extends StatelessWidget {
                 style: TextStyle(
                   fontSize: r.sp(4),
                   fontWeight: FontWeight.w500,
-                  color: isSelected
-                      ? AppColors.primaryShadow
-                      : AppColors.textDark,
+                  color: isSelected ? accent.text : AppColors.textDark,
                 ),
               ),
             ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import '../utils/responsive.dart';
 import '../widgets/app_navbar.dart';
+import '../widgets/bookmark_label.dart';
 import 'history_screen.dart';
 import 'home_screen.dart';
 import 'profile_screen.dart';
@@ -18,6 +20,8 @@ class _MainShellState extends State<MainShell> {
     Icons.history_rounded,
     Icons.person_rounded,
   ];
+  
+  static const _accentIndexes = [4, 1, 3];
   static const _pages = <Widget>[
     HomePage(),
     HistoryPage(),
@@ -28,11 +32,35 @@ class _MainShellState extends State<MainShell> {
 
   @override
   Widget build(BuildContext context) {
+    final r = Responsive(context);
+
     return Scaffold(
-      // Navbar di bawah. SafeArea atas menjaga isi dari status bar.
       body: SafeArea(
         bottom: false,
-        child: IndexedStack(index: _index, children: _pages),
+        child: Column(
+          children: [
+            SizedBox(height: r.h(2)),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 350),
+              transitionBuilder: (child, animation) => SlideTransition(
+                position: animation.drive(
+                  Tween<Offset>(
+                    begin: const Offset(-1, 0),
+                    end: Offset.zero,
+                  ).chain(CurveTween(curve: Curves.easeOutCubic)),
+                ),
+                child: child,
+              ),
+              child: BookmarkLabel(
+                key: ValueKey(_index),
+                text: _labels[_index],
+              ),
+            ),
+            Expanded(
+              child: IndexedStack(index: _index, children: _pages),
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: AppNavbar(
         icons: _icons,

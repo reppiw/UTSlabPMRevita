@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/quiz_provider.dart';
 import '../utils/responsive.dart';
 import '../utils/page_transition.dart';
+import '../utils/app_colors.dart';
 import '../widgets/option_tile.dart';
 import '../widgets/primary_button.dart';
 import '../widgets/progress_header.dart';
@@ -40,9 +41,10 @@ class QuizPage extends StatelessWidget {
         child: Text(
           question.text,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+          style: TextStyle(
             fontSize: r.sp(5.2),
             fontWeight: FontWeight.bold,
+            color: AppColors.textDark,
           ),
         ),
       ),
@@ -55,6 +57,7 @@ class QuizPage extends StatelessWidget {
             label: String.fromCharCode(65 + i),
             text: question.options[i],
             isSelected: quiz.selectedAnswer == i,
+            accentIndex: i,
             onTap: () => context.read<QuizProvider>().selectAnswer(i),
           ),
       ],
@@ -66,6 +69,7 @@ class QuizPage extends StatelessWidget {
           child: PrimaryButton(
             label: 'Kembali',
             outlined: true,
+            accentIndex: quiz.currentIndex + 1,
             onPressed: quiz.currentIndex == 0
                 ? null
                 : () => context.read<QuizProvider>().previousQuestion(),

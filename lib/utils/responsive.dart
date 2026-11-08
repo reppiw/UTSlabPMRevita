@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/theme_provider.dart';
 
 class Responsive {
   final BuildContext context;
 
-  Responsive(this.context);
+  Responsive(this.context){
+    context.watch<ThemeProvider>();
+  }
 
   Size get _size => MediaQuery.of(context).size;
 

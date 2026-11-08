@@ -32,15 +32,6 @@ class HistoryPage extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.symmetric(horizontal: r.w(5), vertical: r.h(2)),
       children: [
-        Text(
-          'Riwayat Kuis',
-          style: TextStyle(
-            fontSize: r.sp(6.5),
-            fontWeight: FontWeight.w700,
-            color: AppColors.primary,
-          ),
-        ),
-        SizedBox(height: r.h(2)),
         for (final entry in history) HistoryTile(entry: entry),
       ],
     );

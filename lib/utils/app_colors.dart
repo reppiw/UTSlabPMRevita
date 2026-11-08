@@ -1,118 +1,137 @@
 import 'package:flutter/material.dart';
 
-/// Satu set warna lengkap. Buat palet baru dengan menyalin salah satu.
-class AppPalette {
-  final Color primary;       // warna utama (tombol, progress)
-  final Color primaryShadow; // versi lebih gelap (sisi bawah tombol)
-  final Color onPrimary;     // teks di atas warna utama
-  final Color selectedFill;  // latar pilihan yang dipilih
-  final Color background;    // latar halaman
-  final Color surface;       // latar kartu/pilihan
-  final Color border;        // garis tepi & sisi bawah kartu
-  final Color textDark;
-  final Color textMuted;
-  final Color disabled;
-  final Color disabledText;
+class AccentColor {
+  final Color main;
+  final Color shadow;
+  final Color lightSoft;
 
-  const AppPalette({
-    required this.primary,
-    required this.primaryShadow,
-    required this.onPrimary,
-    required this.selectedFill,
-    required this.background,
-    required this.surface,
-    required this.border,
-    required this.textDark,
-    required this.textMuted,
-    required this.disabled,
-    required this.disabledText,
+  const AccentColor({
+    required this.main,
+    required this.shadow,
+    required this.lightSoft,
   });
 
-  // ---------- PALET SIAP PAKAI ----------
-  static const green = AppPalette(
-    primary: Color(0xFF58CC02),
-    primaryShadow: Color(0xFF58A700),
-    onPrimary: Colors.white,
-    selectedFill: Color(0xFFE5F6D3),
-    background: Colors.white,
-    surface: Colors.white,
-    border: Color(0xFFE5E5E5),
-    textDark: Color(0xFF4B4B4B),
-    textMuted: Color(0xFFAFAFAF),
-    disabled: Color(0xFFE5E5E5),
-    disabledText: Color(0xFFAFAFAF),
+  factory AccentColor.fromMain(Color main) {
+    final hsl = HSLColor.fromColor(main);
+    final shadowLightness = (hsl.lightness - 0.14).clamp(0.0, 1.0);
+    return AccentColor(
+      main: main,
+      shadow: hsl.withLightness(shadowLightness).toColor(),
+      lightSoft: hsl.withLightness(0.92).toColor(),
+    );
+  }
+
+  Color get soft => AppColors.isDark
+      ? Color.lerp(AppColors.surface, main, 0.22)!
+      : lightSoft;
+
+  Color get text => AppColors.isDark ? main : shadow;
+}
+
+class AppPalette {
+  final String name;
+  final Color primary;
+  final AccentColor primaryAccent;
+  final List<AccentColor> accents; // 5 warna pendamping
+
+  AppPalette({
+    required this.name,
+    required this.primary,
+    required List<Color> colors,
+  })  : primaryAccent = AccentColor.fromMain(primary),
+        accents = colors.map(AccentColor.fromMain).toList();
+
+  // ---------- TEMA ----------
+  static final original = AppPalette(
+    name: 'Original',
+    primary: const Color(0xFF7C5CFF), // ungu cerah
+    colors: const [
+      Color(0xFFFF5C7A), // 0 pink
+      Color(0xFFFF9F1C), // 1 oranye
+      Color(0xFFFFC800), // 2 kuning
+      Color(0xFF2ECC71), // 3 hijau
+      Color(0xFF3B9DFF), // 4 biru
+    ],
   );
 
-  static const blue = AppPalette(
-    primary: Color(0xFF1CB0F6),
-    primaryShadow: Color(0xFF1899D6),
-    onPrimary: Colors.white,
-    selectedFill: Color(0xFFDDF4FF),
-    background: Colors.white,
-    surface: Colors.white,
-    border: Color(0xFFE5E5E5),
-    textDark: Color(0xFF4B4B4B),
-    textMuted: Color(0xFFAFAFAF),
-    disabled: Color(0xFFE5E5E5),
-    disabledText: Color(0xFFAFAFAF),
+  static final ocean = AppPalette(
+    name: 'Laut',
+    primary: const Color(0xFF1CB0F6),
+    colors: const [
+      Color(0xFF0077B6),
+      Color(0xFF00B4D8),
+      Color(0xFF1CB0F6),
+      Color(0xFF48CAE4),
+      Color(0xFF2EC4B6),
+    ],
   );
 
-  static const purple = AppPalette(
-    primary: Color(0xFFCE82FF),
-    primaryShadow: Color(0xFFA568CC),
-    onPrimary: Colors.white,
-    selectedFill: Color(0xFFF3E3FF),
-    background: Colors.white,
-    surface: Colors.white,
-    border: Color(0xFFE5E5E5),
-    textDark: Color(0xFF4B4B4B),
-    textMuted: Color(0xFFAFAFAF),
-    disabled: Color(0xFFE5E5E5),
-    disabledText: Color(0xFFAFAFAF),
+  static final forest = AppPalette(
+    name: 'Hutan',
+    primary: const Color(0xFF58CC02),
+    colors: const [
+      Color(0xFF2D6A4F),
+      Color(0xFF40916C),
+      Color(0xFF58CC02),
+      Color(0xFF8AC926),
+      Color(0xFF1B998B),
+    ],
   );
 
-  static const orange = AppPalette(
-    primary: Color(0xFFFF9600),
-    primaryShadow: Color(0xFFCC7800),
-    onPrimary: Colors.white,
-    selectedFill: Color(0xFFFFEFD6),
-    background: Colors.white,
-    surface: Colors.white,
-    border: Color(0xFFE5E5E5),
-    textDark: Color(0xFF4B4B4B),
-    textMuted: Color(0xFFAFAFAF),
-    disabled: Color(0xFFE5E5E5),
-    disabledText: Color(0xFFAFAFAF),
+  static final sunset = AppPalette(
+    name: 'Senja',
+    primary: const Color(0xFFF77F00),
+    colors: const [
+      Color(0xFFE63946),
+      Color(0xFFF77F00),
+      Color(0xFFE9A800),
+      Color(0xFFFF5D8F),
+      Color(0xFFB5179E),
+    ],
   );
 
-  static const pastel = AppPalette(
-    primary: Color(0xFFB8A9F5),
-    primaryShadow: Color(0xFF8F7FD1),
-    onPrimary: Color(0xFF3B2F7A),
-    selectedFill: Color(0xFFE4DEFF),
-    background: Color(0xFFF8F5FF),
-    surface: Colors.white,
-    border: Color(0xFFD9D2F5),
-    textDark: Color(0xFF3B2F7A),
-    textMuted: Color(0xFF9A93C0),
-    disabled: Color(0xFFE9E6F2),
-    disabledText: Color(0xFFB5B0CC),
+  static final candy = AppPalette(
+    name: 'Permen',
+    primary: const Color(0xFFFF4D8D),
+    colors: const [
+      Color(0xFFFF4D8D),
+      Color(0xFFFF8FA3),
+      Color(0xFFC77DFF),
+      Color(0xFF5AB8E8),
+      Color(0xFF4CC9A7),
+    ],
   );
+
+  static final List<AppPalette> all = [original, ocean, forest, sunset, candy];
 }
 
 class AppColors {
-  // >>> GANTI PALET DI SINI: green, blue, purple, orange, pastel <<<
-  static const AppPalette active = AppPalette.green;
+  static AppPalette active = AppPalette.original;
+  static bool isDark = false;
 
+  // ---------- Mengikuti TEMA ----------
   static Color get primary => active.primary;
-  static Color get primaryShadow => active.primaryShadow;
-  static Color get onPrimary => active.onPrimary;
-  static Color get selectedFill => active.selectedFill;
-  static Color get background => active.background;
-  static Color get surface => active.surface;
-  static Color get border => active.border;
-  static Color get textDark => active.textDark;
-  static Color get textMuted => active.textMuted;
-  static Color get disabled => active.disabled;
-  static Color get disabledText => active.disabledText;
+  static Color get primaryShadow => active.primaryAccent.shadow;
+  static Color get primaryText => active.primaryAccent.text;
+  static Color get onPrimary => Colors.white;
+  static Color get selectedFill => active.primaryAccent.soft;
+
+  // ---------- Mengikuti MODE terang/gelap ----------
+  static Color get background =>
+      isDark ? const Color(0xFF120B1F) : Colors.white;
+  static Color get surface =>
+      isDark ? const Color(0xFF1E1530) : Colors.white;
+  static Color get border =>
+      isDark ? const Color(0xFF33264D) : const Color(0xFFE5E5E5);
+  static Color get textDark =>
+      isDark ? const Color(0xFFEDE7F7) : const Color(0xFF4B4B4B);
+  static Color get textMuted =>
+      isDark ? const Color(0xFF9C90B8) : const Color(0xFFAFAFAF);
+  static Color get disabled =>
+      isDark ? const Color(0xFF2A2040) : const Color(0xFFE5E5E5);
+  static Color get disabledText =>
+      isDark ? const Color(0xFF6B5F85) : const Color(0xFFAFAFAF);
+
+  /// Warna aksen ke-[i]. Nomor di atas 4 kembali ke awal.
+  static AccentColor accent(int i) => active.accents[i % active.accents.length];
 }

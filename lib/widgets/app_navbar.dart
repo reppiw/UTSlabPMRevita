@@ -24,12 +24,11 @@ class AppNavbar extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: AppColors.primary, // mengikuti tema, bukan latar
         border: Border(
-          top: BorderSide(color: AppColors.border, width: r.sp(0.5)),
+          top: BorderSide(color: AppColors.primaryShadow, width: r.sp(1)),
         ),
       ),
-      // SafeArea di dalam Container agar area gesture bar ikut berwarna.
       child: SafeArea(
         top: false,
         child: Padding(

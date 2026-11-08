@@ -115,6 +115,7 @@ class ResultPage extends StatelessWidget {
           width: double.infinity,
           child: PrimaryButton(
             label: 'Main Lagi',
+            accentIndex: 3,
             onPressed: () => _playAgain(context),
           ),
         ),
@@ -123,6 +124,7 @@ class ResultPage extends StatelessWidget {
           width: double.infinity,
           child: PrimaryButton(
             label: 'Kembali ke Awal',
+            accentIndex: 4,
             outlined: true,
             onPressed: () => _backToHome(context),
           ),

@@ -6,7 +6,7 @@ class ProgressHeader extends StatelessWidget {
   final String userName;
   final int current; // nomor soal, mulai dari 1
   final int total;
-  final double progress; // 0.0 - 1.0
+  final double progress; // tidak dipakai, dipertahankan agar kompatibel
 
   const ProgressHeader({
     super.key,
@@ -19,7 +19,8 @@ class ProgressHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final r = Responsive(context);
-    final barHeight = r.sp(4);
+    final barHeight = r.sp(3.2);
+    final gap = r.sp(1);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,43 +50,25 @@ class ProgressHeader extends StatelessWidget {
           ],
         ),
         SizedBox(height: r.sp(2.5)),
-        Container(
-          height: barHeight,
-          decoration: BoxDecoration(
-            color: AppColors.border,
-            borderRadius: BorderRadius.circular(barHeight),
-          ),
-          child: TweenAnimationBuilder<double>(
-            tween: Tween<double>(begin: 0, end: progress),
-            duration: const Duration(milliseconds: 400),
-            curve: Curves.easeOut,
-            builder: (context, value, _) => Align(
-              alignment: Alignment.centerLeft,
-              child: FractionallySizedBox(
-                widthFactor: value.clamp(0.0, 1.0),
-                child: Container(
-                  height: barHeight,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: barHeight * 0.4,
-                    vertical: barHeight * 0.2,
-                  ),
-                  alignment: Alignment.topCenter,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(barHeight),
-                  ),
-                  // Kilau tipis di bagian atas bar
-                  child: Container(
-                    height: barHeight * 0.22,
+        Row(
+          children: [
+            for (int i = 0; i < total; i++)
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(right: i == total - 1 ? 0 : gap),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    height: barHeight,
                     decoration: BoxDecoration(
-                      color: const Color.fromRGBO(255, 255, 255, 0.3),
+                      color: i < current
+                          ? AppColors.accent(i).main
+                          : AppColors.border,
                       borderRadius: BorderRadius.circular(barHeight),
                     ),
                   ),
                 ),
               ),
-            ),
-          ),
+          ],
         ),
       ],
     );
