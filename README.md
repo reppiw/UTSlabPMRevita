@@ -39,12 +39,13 @@ HexenQ adalah aplikasi kuis pilihan ganda berbasis Flutter. Pengguna dapat mengi
 ## Dokumentasi
 
 **Font:** https://fonts.google.com/share?selection.family=Montserrat:ital,wght@0,100..900;1,100..900
-## Images: 
+**Images:** 
 https://i.pinimg.com/736x/e1/0f/71/e10f71e447b9aac3be44be6f08b399f5.jpg
 https://i.pinimg.com/736x/af/1c/90/af1c90a42802cd8678988be18d47ee8e.jpg
 https://i.pinimg.com/736x/3c/85/ec/3c85ec13a2369d669c3f1c1c16b8c7ea.jpg
 https://i.pinimg.com/736x/7f/5a/f0/7f5af0878e8b6b512a85b909ed01302a.jpg
 https://i.pinimg.com/736x/f3/58/58/f358584ffcf7916bb266a38762b80fe8.jpg
-Inspo: Duolingo
+
+**Inspo:** Duolingo
 **Screenshoot aplikasi:** https://drive.google.com/drive/folders/1auEWdvvNy_4IkNdK17f1cHhhRXLQBus-?usp=sharing
 **Link Prototype:** https://www.figma.com/design/K5Yfm710zIbO0l5CJkZMyI/Untitled?node-id=0-1&t=joQgTYE8meif1bw6-1
