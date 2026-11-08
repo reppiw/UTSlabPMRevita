@@ -1,6 +1,7 @@
 import 'quiz_mode.dart';
 
 class HistoryEntry {
+  final String ownerEmail;
   final String userName;
   final String categoryName;
   final int difficulty;
@@ -10,6 +11,7 @@ class HistoryEntry {
   final DateTime date;
 
   const HistoryEntry({
+    required this.ownerEmail,
     required this.userName,
     required this.categoryName,
     required this.difficulty,

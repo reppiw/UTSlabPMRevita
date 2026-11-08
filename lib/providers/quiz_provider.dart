@@ -7,28 +7,32 @@ import '../models/quiz_mode.dart';
 
 class QuizProvider extends ChangeNotifier {
   QuizProvider() {
-    resetQuiz(); // siapkan soal untuk kategori default
+    resetQuiz();
   }
 
+  // ---------- PENGGUNA & PENGATURAN ----------
   String _userName = '';
+  String _userEmail = '';
   QuizCategory _category = quizCategories.first;
   int _difficulty = 3;
   QuizMode _mode = QuizMode.casual;
 
+  // ---------- PROGRES KUIS ----------
   List<Question> _questions = [];
   List<int?> _answers = [];
   int _currentIndex = 0;
   bool _saved = false;
 
+  // ---------- RIWAYAT (di memori) ----------
   final List<HistoryEntry> _history = [];
 
-  // ---------- GETTER: pengaturan ----------
+  // ---------- GETTER ----------
   String get userName => _userName;
+  String get userEmail => _userEmail;
   QuizCategory get category => _category;
   int get difficulty => _difficulty;
   QuizMode get mode => _mode;
 
-  // ---------- GETTER: progres ----------
   int get currentIndex => _currentIndex;
   int get totalQuestions => _questions.length;
   Question get currentQuestion => _questions[_currentIndex];
@@ -49,13 +53,15 @@ class QuizProvider extends ChangeNotifier {
   int get scorePercent =>
       totalQuestions == 0 ? 0 : ((score / totalQuestions) * 100).round();
 
-  // ---------- GETTER: riwayat ----------
-  /// Riwayat terbaru di paling atas.
-  List<HistoryEntry> get history => List.unmodifiable(_history.reversed);
+  /// Riwayat milik akun yang sedang masuk, terbaru di paling atas.
+  List<HistoryEntry> get history => List.unmodifiable(
+        _history.where((e) => e.ownerEmail == _userEmail).toList().reversed,
+      );
 
-  // ---------- ACTION: pengaturan ----------
-  void setUserName(String name) {
+  // ---------- ACTION: pengguna & pengaturan ----------
+  void setUser(String name, String email) {
     _userName = name.trim();
+    _userEmail = email;
     notifyListeners();
   }
 
@@ -94,7 +100,6 @@ class QuizProvider extends ChangeNotifier {
     }
   }
 
-  /// Susun ulang soal sesuai pengaturan saat ini dan mulai dari awal.
   void resetQuiz() {
     _questions = questionsFor(_category.id, _difficulty);
     _answers = List<int?>.filled(_questions.length, null);
@@ -103,21 +108,22 @@ class QuizProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Reset total, termasuk nama dan pengaturan
+  // Dipanggil saat keluar akun.
   void resetAll() {
     _userName = '';
+    _userEmail = '';
     _category = quizCategories.first;
     _difficulty = 3;
     _mode = QuizMode.casual;
     resetQuiz();
   }
 
-  /// Catat hasil ke riwayat. Aman dipanggil berulang, hanya tersimpan sekali
   void saveToHistory() {
     if (_saved) return;
     _saved = true;
     _history.add(
       HistoryEntry(
+        ownerEmail: _userEmail,
         userName: _userName,
         categoryName: _category.name,
         difficulty: _difficulty,
@@ -130,8 +136,9 @@ class QuizProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Hapus riwayat milik akun yang sedang masuk saja
   void clearHistory() {
-    _history.clear();
+    _history.removeWhere((e) => e.ownerEmail == _userEmail);
     notifyListeners();
   }
 }

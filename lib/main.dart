@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'providers/auth_provider.dart';
 import 'providers/quiz_provider.dart';
-import 'screens/home_screen.dart';
-import 'screens/main_shell.dart';
+import 'screens/login_screen.dart';
 import 'utils/app_colors.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => QuizProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => QuizProvider()),
+      ],
       child: const MyApp(),
     ),
   );
@@ -20,14 +23,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'KuisKu',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        fontFamily: 'Montserrat',
-        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary).copyWith(primary: AppColors.primary),
+        fontFamily: 'Poppins',
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary)
+            .copyWith(primary: AppColors.primary),
         scaffoldBackgroundColor: AppColors.background,
         useMaterial3: true,
       ),
-      home: const MainShell(),
+      home: const LoginScreen(),
     );
   }
 }

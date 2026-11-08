@@ -1,22 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 import '../providers/quiz_provider.dart';
 import '../utils/app_colors.dart';
+import '../utils/page_transition.dart';
 import '../utils/responsive.dart';
 import '../widgets/primary_button.dart';
 import '../widgets/stat_card.dart';
+import 'login_screen.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
+
+  void _logout(BuildContext context) {
+    context.read<AuthProvider>().logout();
+    context.read<QuizProvider>().resetAll();
+    Navigator.pushAndRemoveUntil(
+      context,
+      FadeSlideRoute(page: const LoginScreen()),
+      (route) => false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final r = Responsive(context);
     final quiz = context.watch<QuizProvider>();
+    final user = context.watch<AuthProvider>().currentUser;
     final history = quiz.history;
 
-    final name = quiz.userName.isEmpty ? 'Pengguna' : quiz.userName;
-    final initial = name.substring(0, 1).toUpperCase();
+    final name = user?.name ?? 'Pengguna';
+    final email = user?.email ?? '';
+    final initial = name.isEmpty ? '?' : name.substring(0, 1).toUpperCase();
 
     final total = history.length;
     final average = total == 0
@@ -66,9 +81,10 @@ class ProfilePage extends StatelessWidget {
           ),
           SizedBox(height: r.h(0.5)),
           Text(
-            'Nama diisi saat memulai kuis',
+            email,
+            textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: r.sp(3.4),
+              fontSize: r.sp(3.6),
               color: AppColors.textMuted,
             ),
           ),
@@ -97,6 +113,14 @@ class ProfilePage extends StatelessWidget {
               onPressed: total == 0
                   ? null
                   : () => context.read<QuizProvider>().clearHistory(),
+            ),
+          ),
+          SizedBox(height: r.h(1.5)),
+          SizedBox(
+            width: double.infinity,
+            child: PrimaryButton(
+              label: 'Keluar',
+              onPressed: () => _logout(context),
             ),
           ),
         ],

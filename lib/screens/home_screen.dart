@@ -7,7 +7,6 @@ import '../utils/app_colors.dart';
 import '../utils/page_transition.dart';
 import '../utils/responsive.dart';
 import '../widgets/category_card.dart';
-import '../widgets/name_dialog.dart';
 import '../widgets/difficulty_dialog.dart';
 import 'quiz_page.dart';
 
@@ -20,14 +19,6 @@ class HomePage extends StatelessWidget {
   ) async {
     final quiz = context.read<QuizProvider>();
 
-    final name = await NameDialog.show(
-      context,
-      categoryName: category.name,
-      initialName: quiz.userName,
-    );
-
-    if (name == null || !context.mounted) return;
-
     final difficulty = await DifficultyDialog.show(
       context,
       categoryId: category.id,
@@ -38,7 +29,6 @@ class HomePage extends StatelessWidget {
     if (difficulty == null || !context.mounted) return;
 
     quiz.selectCategory(category);
-    quiz.setUserName(name);
     quiz.setDifficulty(difficulty);
     quiz.resetQuiz();
 
@@ -65,7 +55,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final r = Responsive(context);
-
+    final userName = context.watch<QuizProvider>().userName;
     // Populer: urut dari jumlah pemain terbanyak.
     final popular = List<QuizCategory>.of(quizCategories)
       ..sort((a, b) => b.plays.compareTo(a.plays));
@@ -84,7 +74,7 @@ class HomePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Selamat datang!',
+              'Selamat datang, $userName!',
               style: TextStyle(
                 fontSize: r.sp(6.5),
                 fontWeight: FontWeight.w700,
