@@ -8,6 +8,7 @@ class PrimaryButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool outlined;
   final int? accentIndex; // 0-4, kosong = warna utama tema
+  final Color? color;
 
   const PrimaryButton({
     super.key,
@@ -15,6 +16,7 @@ class PrimaryButton extends StatelessWidget {
     required this.onPressed,
     this.outlined = false,
     this.accentIndex,
+    this.color,
   });
 
   @override
@@ -22,8 +24,9 @@ class PrimaryButton extends StatelessWidget {
     final r = Responsive(context);
     final enabled = onPressed != null;
 
-    final accent =
-        accentIndex == null ? null : AppColors.accent(accentIndex!);
+    final accent = color != null
+        ? AccentColor.fromMain(color!)
+        : accentIndex == null ? null : AppColors.accent(accentIndex!);
     final main = accent?.main ?? AppColors.primary;
     final shadow = accent?.shadow ?? AppColors.primaryShadow;
     final text = accent?.text ?? AppColors.primaryText;

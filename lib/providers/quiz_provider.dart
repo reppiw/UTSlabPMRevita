@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import '../data/data_dummy.dart';
 import '../models/history_entry.dart';
@@ -23,6 +24,11 @@ class QuizProvider extends ChangeNotifier {
   int _currentIndex = 0;
   bool _saved = false;
 
+  // ---------- TIMER (mode berwaktu) ----------
+  Timer? _timer;
+  int _secondsLeft = secondsPerQuestion;
+  bool _timeExpired = false; // true jika waktu habis di soal terakhir
+
   // ---------- RIWAYAT (di memori) ----------
   final List<HistoryEntry> _history = [];
 
@@ -32,6 +38,10 @@ class QuizProvider extends ChangeNotifier {
   QuizCategory get category => _category;
   int get difficulty => _difficulty;
   QuizMode get mode => _mode;
+
+  bool get isTimed => _mode == QuizMode.timed;
+  int get secondsLeft => _secondsLeft;
+  bool get timeExpired => _timeExpired;
 
   int get currentIndex => _currentIndex;
   int get totalQuestions => _questions.length;
@@ -80,6 +90,39 @@ class QuizProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // ---------- ACTION: timer ----------
+  void startTimer() {
+    _timer?.cancel();
+    _timer = null;
+    _timeExpired = false;
+    if (!isTimed) return;
+
+    _secondsLeft = secondsPerQuestion;
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
+    notifyListeners();
+  }
+
+  /// Hentikan timer tanpa memberi tahu UI (aman dipanggil dari dispose).
+  void stopTimer() {
+    _timer?.cancel();
+    _timer = null;
+  }
+
+  void _tick() {
+    _secondsLeft--;
+    if (_secondsLeft <= 0) {
+      if (isLastQuestion) {
+        stopTimer();
+        _secondsLeft = 0;
+        _timeExpired = true;
+      } else {
+        _currentIndex++;
+        _secondsLeft = secondsPerQuestion;
+      }
+    }
+    notifyListeners();
+  }
+
   // ---------- ACTION: kuis ----------
   void selectAnswer(int optionIndex) {
     _answers[_currentIndex] = optionIndex;
@@ -89,11 +132,13 @@ class QuizProvider extends ChangeNotifier {
   void nextQuestion() {
     if (_currentIndex < totalQuestions - 1) {
       _currentIndex++;
+      if (isTimed) _secondsLeft = secondsPerQuestion;
       notifyListeners();
     }
   }
 
   void previousQuestion() {
+    if (isTimed) return; // mode berwaktu tidak boleh mundur
     if (_currentIndex > 0) {
       _currentIndex--;
       notifyListeners();
@@ -101,14 +146,17 @@ class QuizProvider extends ChangeNotifier {
   }
 
   void resetQuiz() {
+    stopTimer();
     _questions = questionsFor(_category.id, _difficulty);
     _answers = List<int?>.filled(_questions.length, null);
     _currentIndex = 0;
+    _secondsLeft = secondsPerQuestion;
+    _timeExpired = false;
     _saved = false;
     notifyListeners();
   }
 
-  // Dipanggil saat keluar akun.
+  /// Dipanggil saat keluar akun.
   void resetAll() {
     _userName = '';
     _userEmail = '';
@@ -136,9 +184,15 @@ class QuizProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Hapus riwayat milik akun yang sedang masuk saja
+  /// Hapus riwayat milik akun yang sedang masuk saja.
   void clearHistory() {
     _history.removeWhere((e) => e.ownerEmail == _userEmail);
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 }

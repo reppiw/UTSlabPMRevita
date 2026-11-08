@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../data/data_dummy.dart';
 import '../models/quiz_category.dart';
 import '../providers/quiz_provider.dart';
@@ -20,19 +19,24 @@ class HomePage extends StatelessWidget {
   ) async {
     final quiz = context.read<QuizProvider>();
 
-    final difficulty = await DifficultyDialog.show(
+    final setup = await DifficultyDialog.show(
       context,
       categoryId: category.id,
       categoryName: category.name,
       initialValue: quiz.difficulty,
+      initialMode: quiz.mode,
     );
-    if (difficulty == null || !context.mounted) return;
+    if (setup == null || !context.mounted) return;
 
     quiz.selectCategory(category);
-    quiz.setDifficulty(difficulty);
-    quiz.resetQuiz(); // setelah setDifficulty agar soal sesuai level
+    quiz.setDifficulty(setup.difficulty);
+    quiz.setMode(setup.mode);
+    quiz.resetQuiz();
 
-    Navigator.push(context, FadeSlideRoute(page: const QuizPage()));
+    Navigator.push(
+      context,
+      FadeSlideRoute(page: const QuizPage()),
+    );
   }
 
   Widget _sectionTitle(Responsive r, String text) {

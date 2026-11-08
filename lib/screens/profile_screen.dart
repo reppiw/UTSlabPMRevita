@@ -176,6 +176,7 @@ class ProfilePage extends StatelessWidget {
             width: double.infinity,
             child: PrimaryButton(
               label: 'Keluar',
+              color: Colors.red,
               onPressed: () => _logout(context),
             ),
           ),
