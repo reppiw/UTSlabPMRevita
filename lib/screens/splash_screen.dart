@@ -88,7 +88,6 @@ class _Curtain extends StatelessWidget {
     final r = Responsive(context);
     final barWidth = r.w(55);
     final barHeight = r.sp(2.8);
-    final imageHeight = r.isLandscape ? r.h(28) : r.h(20);
 
     return Material(
       type: MaterialType.transparency,

@@ -5,6 +5,7 @@ import 'providers/quiz_provider.dart';
 import 'providers/theme_provider.dart';
 import 'screens/splash_screen.dart';
 import 'utils/app_colors.dart';
+import 'widgets/adaptive_frame.dart';
 
 void main() {
   runApp(
@@ -38,6 +39,8 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: AppColors.background,
         useMaterial3: true,
       ),
+      builder: (context, child) =>
+          AdaptiveFrame(child: child ?? const SizedBox.shrink()),
       home: const SplashScreen(),
     );
   }

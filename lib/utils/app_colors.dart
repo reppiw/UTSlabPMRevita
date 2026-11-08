@@ -131,6 +131,8 @@ class AppColors {
       isDark ? const Color(0xFF2A2040) : const Color(0xFFE5E5E5);
   static Color get disabledText =>
       isDark ? const Color(0xFF6B5F85) : const Color(0xFFAFAFAF);
+  static Color get outerBackground =>
+      isDark ? const Color(0xFF0B0615) : const Color(0xFFF1EFF6);
 
   /// Warna aksen ke-[i]. Nomor di atas 4 kembali ke awal.
   static AccentColor accent(int i) => active.accents[i % active.accents.length];

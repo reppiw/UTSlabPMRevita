@@ -65,11 +65,6 @@ class ProfilePage extends StatelessWidget {
 
     final avatarSize = r.sp(26);
 
-    // Lebar kartu tema: 2 per baris (portrait), 3 per baris (landscape).
-    final gap = r.w(3);
-    final perRow = r.isLandscape ? 3 : 2;
-    final swatchWidth = (r.w(88) - gap * (perRow - 1)) / perRow;
-
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: r.w(6), vertical: r.h(3)),
       child: Column(
@@ -141,23 +136,33 @@ class ProfilePage extends StatelessWidget {
 
           SizedBox(height: r.h(3)),
           _sectionTitle(r, 'Tema'),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Wrap(
-              spacing: gap,
-              runSpacing: r.h(1.5),
-              children: [
-                for (int i = 0; i < AppPalette.all.length; i++)
-                  SizedBox(
-                    width: swatchWidth,
-                    child: ThemeSwatch(
-                      palette: AppPalette.all[i],
-                      isSelected: themeState.themeIndex == i,
-                      onTap: () => context.read<ThemeProvider>().setTheme(i),
-                    ),
-                  ),
-              ],
-            ),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final gap = r.w(3);
+              final perRow = constraints.maxWidth >= r.sp(120) ? 3 : 2;
+              final itemWidth =
+                  ((constraints.maxWidth - gap * (perRow - 1)) / perRow)
+                      .floorToDouble();
+
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Wrap(
+                  spacing: gap,
+                  runSpacing: r.h(1.5),
+                  children: [
+                    for (int i = 0; i < AppPalette.all.length; i++)
+                      SizedBox(
+                        width: itemWidth,
+                        child: ThemeSwatch(
+                          palette: AppPalette.all[i],
+                          isSelected: themeState.themeIndex == i,
+                          onTap: () => context.read<ThemeProvider>().setTheme(i),
+                        ),
+                      ),
+                  ],
+                ),
+              );
+            },
           ),
 
           SizedBox(height: r.h(4)),

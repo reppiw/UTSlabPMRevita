@@ -81,147 +81,149 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Center(
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: r.w(7)),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    'lib/assets/images/icon55.png',
-                    height: imageHeight,
-                    fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) =>
-                        SizedBox(height: imageHeight),
-                  ),
-                  SizedBox(height: r.h(1.5)),
-                  Text(
-                    _isRegister ? 'Buat Akun' : 'Masuk',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: r.sp(7),
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.primary,
+            child: ConstrainedBox(constraints: BoxConstraints(maxWidth: r.formWidth),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'lib/assets/images/icon55.png',
+                      height: imageHeight,
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) =>
+                          SizedBox(height: imageHeight),
                     ),
-                  ),
-                  SizedBox(height: r.h(0.8)),
-                  Text(
-                    _isRegister
-                        ? 'Daftar dulu untuk mulai bermain'
-                        : 'Masuk untuk melanjutkan kuis',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: r.sp(3.8),
-                      color: AppColors.textMuted,
+                    SizedBox(height: r.h(1.5)),
+                    Text(
+                      _isRegister ? 'Buat Akun' : 'Masuk',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: r.sp(7),
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.primary,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: r.h(3)),
+                    SizedBox(height: r.h(0.8)),
+                    Text(
+                      _isRegister
+                          ? 'Daftar dulu untuk mulai bermain'
+                          : 'Masuk untuk melanjutkan kuis',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: r.sp(3.8),
+                        color: AppColors.textMuted,
+                      ),
+                    ),
+                    SizedBox(height: r.h(3)),
 
-                  // Kolom nama hanya muncul saat mendaftar.
-                  AnimatedSize(
-                    duration: const Duration(milliseconds: 250),
-                    curve: Curves.easeOut,
-                    child: _isRegister
-                        ? Padding(
-                            padding: EdgeInsets.only(bottom: r.h(2)),
-                            child: AuthTextField(
-                              controller: _nameController,
-                              label: 'Nama',
-                              hint: 'Contoh: Budi',
-                              textCapitalization: TextCapitalization.words,
-                              validator: (v) {
-                                if (!_isRegister) return null;
-                                if (v == null || v.trim().isEmpty) {
-                                  return 'Nama tidak boleh kosong';
-                                }
-                                return null;
-                              },
-                            ),
-                          )
-                        : const SizedBox(width: double.infinity),
-                  ),
+                    // Kolom nama hanya muncul saat mendaftar.
+                    AnimatedSize(
+                      duration: const Duration(milliseconds: 250),
+                      curve: Curves.easeOut,
+                      child: _isRegister
+                          ? Padding(
+                              padding: EdgeInsets.only(bottom: r.h(2)),
+                              child: AuthTextField(
+                                controller: _nameController,
+                                label: 'Nama',
+                                hint: 'Contoh: Budi',
+                                textCapitalization: TextCapitalization.words,
+                                validator: (v) {
+                                  if (!_isRegister) return null;
+                                  if (v == null || v.trim().isEmpty) {
+                                    return 'Nama tidak boleh kosong';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            )
+                          : const SizedBox(width: double.infinity),
+                    ),
 
-                  AuthTextField(
-                    controller: _emailController,
-                    label: 'Email',
-                    hint: 'contoh@email.com',
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (v) {
-                      final value = v?.trim() ?? '';
-                      if (value.isEmpty) return 'Email tidak boleh kosong';
-                      if (!value.contains('@') || !value.contains('.')) {
-                        return 'Format email tidak valid';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: r.h(2)),
-                  AuthTextField(
-                    controller: _passwordController,
-                    label: 'Kata sandi',
-                    hint: 'Minimal 6 karakter',
-                    obscureText: _obscure,
-                    textInputAction: TextInputAction.done,
-                    onSubmitted: (_) => _submit(),
-                    suffix: GestureDetector(
-                      onTap: () => setState(() => _obscure = !_obscure),
-                      child: Text(
-                        _obscure ? 'Lihat' : 'Tutup',
+                    AuthTextField(
+                      controller: _emailController,
+                      label: 'Email',
+                      hint: 'contoh@email.com',
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (v) {
+                        final value = v?.trim() ?? '';
+                        if (value.isEmpty) return 'Email tidak boleh kosong';
+                        if (!value.contains('@') || !value.contains('.')) {
+                          return 'Format email tidak valid';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: r.h(2)),
+                    AuthTextField(
+                      controller: _passwordController,
+                      label: 'Kata sandi',
+                      hint: 'Minimal 6 karakter',
+                      obscureText: _obscure,
+                      textInputAction: TextInputAction.done,
+                      onSubmitted: (_) => _submit(),
+                      suffix: GestureDetector(
+                        onTap: () => setState(() => _obscure = !_obscure),
+                        child: Text(
+                          _obscure ? 'Lihat' : 'Tutup',
+                          style: TextStyle(
+                            fontSize: r.sp(3.4),
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
+                      validator: (v) {
+                        if (v == null || v.isEmpty) {
+                          return 'Kata sandi tidak boleh kosong';
+                        }
+                        if (_isRegister && v.length < 6) {
+                          return 'Minimal 6 karakter';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    if (_error != null) ...[
+                      SizedBox(height: r.h(1.5)),
+                      Text(
+                        _error!,
+                        textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: r.sp(3.4),
+                          fontSize: r.sp(3.5),
+                          color: Colors.red.shade400,
+                        ),
+                      ),
+                    ],
+
+                    SizedBox(height: r.h(3)),
+                    SizedBox(
+                      width: double.infinity,
+                      child: PrimaryButton(
+                        label: _isRegister ? 'Daftar' : 'Masuk',
+                        onPressed: _submit,
+                      ),
+                    ),
+                    SizedBox(height: r.h(1.5)),
+                    TextButton(
+                      onPressed: _toggleMode,
+                      child: Text(
+                        _isRegister
+                            ? 'Sudah punya akun? Masuk'
+                            : 'Belum punya akun? Daftar',
+                        style: TextStyle(
+                          fontSize: r.sp(3.8),
                           fontWeight: FontWeight.w700,
                           color: AppColors.primary,
                         ),
                       ),
                     ),
-                    validator: (v) {
-                      if (v == null || v.isEmpty) {
-                        return 'Kata sandi tidak boleh kosong';
-                      }
-                      if (_isRegister && v.length < 6) {
-                        return 'Minimal 6 karakter';
-                      }
-                      return null;
-                    },
-                  ),
-
-                  if (_error != null) ...[
-                    SizedBox(height: r.h(1.5)),
-                    Text(
-                      _error!,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: r.sp(3.5),
-                        color: Colors.red.shade400,
-                      ),
-                    ),
+                    SizedBox(height: r.h(2)),
                   ],
-
-                  SizedBox(height: r.h(3)),
-                  SizedBox(
-                    width: double.infinity,
-                    child: PrimaryButton(
-                      label: _isRegister ? 'Daftar' : 'Masuk',
-                      onPressed: _submit,
-                    ),
-                  ),
-                  SizedBox(height: r.h(1.5)),
-                  TextButton(
-                    onPressed: _toggleMode,
-                    child: Text(
-                      _isRegister
-                          ? 'Sudah punya akun? Masuk'
-                          : 'Belum punya akun? Daftar',
-                      style: TextStyle(
-                        fontSize: r.sp(3.8),
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: r.h(2)),
-                ],
+                ),
               ),
-            ),
+            )
           ),
         ),
       ),
