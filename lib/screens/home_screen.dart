@@ -8,6 +8,7 @@ import '../utils/page_transition.dart';
 import '../utils/responsive.dart';
 import '../widgets/category_card.dart';
 import '../widgets/name_dialog.dart';
+import '../widgets/difficulty_dialog.dart';
 import 'quiz_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -25,11 +26,20 @@ class HomePage extends StatelessWidget {
       initialName: quiz.userName,
     );
 
-    // Dibatalkan, atau halaman sudah tidak aktif.
     if (name == null || !context.mounted) return;
+
+    final difficulty = await DifficultyDialog.show(
+      context,
+      categoryId: category.id,
+      categoryName: category.name,
+      initialValue: quiz.difficulty,
+    );
+
+    if (difficulty == null || !context.mounted) return;
 
     quiz.selectCategory(category);
     quiz.setUserName(name);
+    quiz.setDifficulty(difficulty);
     quiz.resetQuiz();
 
     Navigator.push(
