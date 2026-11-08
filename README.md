@@ -47,5 +47,7 @@ https://i.pinimg.com/736x/7f/5a/f0/7f5af0878e8b6b512a85b909ed01302a.jpg
 https://i.pinimg.com/736x/f3/58/58/f358584ffcf7916bb266a38762b80fe8.jpg
 
 **Inspo:** Duolingo
+
 **Screenshoot aplikasi:** https://drive.google.com/drive/folders/1auEWdvvNy_4IkNdK17f1cHhhRXLQBus-?usp=sharing
+
 **Link Prototype:** https://www.figma.com/design/K5Yfm710zIbO0l5CJkZMyI/Untitled?node-id=0-1&t=joQgTYE8meif1bw6-1
