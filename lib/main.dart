@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/quiz_provider.dart';
 import 'screens/home_screen.dart';
+import 'screens/main_shell.dart';
 import 'utils/app_colors.dart';
 
 void main() {
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: AppColors.background,
         useMaterial3: true,
       ),
-      home: const HomePage(),
+      home: const MainShell(),
     );
   }
 }

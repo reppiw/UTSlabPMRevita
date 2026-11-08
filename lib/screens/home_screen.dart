@@ -1,129 +1,135 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../data/data_dummy.dart';
+import '../models/quiz_category.dart';
 import '../providers/quiz_provider.dart';
-import '../utils/responsive.dart';
+import '../utils/app_colors.dart';
 import '../utils/page_transition.dart';
-import '../widgets/primary_button.dart';
+import '../utils/responsive.dart';
+import '../widgets/category_card.dart';
+import '../widgets/name_dialog.dart';
 import 'quiz_page.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _nameController;
-
-  @override
-  void initState() {
-    super.initState();
-    _nameController = TextEditingController(
-      text: context.read<QuizProvider>().userName,
-    );
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    super.dispose();
-  }
-
-  void _startQuiz() {
-    if (!_formKey.currentState!.validate()) return;
-
+  Future<void> _openCategory(
+    BuildContext context,
+    QuizCategory category,
+  ) async {
     final quiz = context.read<QuizProvider>();
-    quiz.setUserName(_nameController.text);
-    quiz.resetQuiz();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Nama tersimpan: ${quiz.userName}')),
+    final name = await NameDialog.show(
+      context,
+      categoryName: category.name,
+      initialName: quiz.userName,
     );
+
+    // Dibatalkan, atau halaman sudah tidak aktif.
+    if (name == null || !context.mounted) return;
+
+    quiz.selectCategory(category);
+    quiz.setUserName(name);
+    quiz.resetQuiz();
 
     Navigator.push(
       context,
-      FadeSlideRoute(page: const QuizPage())
+      FadeSlideRoute(page: const QuizPage()),
+    );
+  }
+
+  Widget _sectionTitle(Responsive r, String text) {
+    return Padding(
+      padding: EdgeInsets.only(top: r.h(2.5), bottom: r.h(1.5)),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: r.sp(5),
+          fontWeight: FontWeight.w700,
+          color: AppColors.textDark,
+        ),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final r = Responsive(context);
-    final primary = Theme.of(context).colorScheme.primary;
 
-    return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: r.w(7)),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+    // Populer: urut dari jumlah pemain terbanyak.
+    final popular = List<QuizCategory>.of(quizCategories)
+      ..sort((a, b) => b.plays.compareTo(a.plays));
+
+    final contentWidth = r.w(90);
+    final gap = r.w(3);
+    final popularWidth = r.isLandscape ? r.w(40) : r.w(72);
+    final gridWidth =
+        r.isLandscape ? (contentWidth - gap) / 2 : contentWidth;
+
+    return SafeArea(
+      top: false,
+      child: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: r.w(5), vertical: r.h(2)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Selamat datang!',
+              style: TextStyle(
+                fontSize: r.sp(6.5),
+                fontWeight: FontWeight.w700,
+                color: AppColors.primary,
+              ),
+            ),
+            SizedBox(height: r.h(0.5)),
+            Text(
+              'Pilih kuis yang ingin kamu kerjakan.',
+              style: TextStyle(
+                fontSize: r.sp(3.8),
+                color: AppColors.textMuted,
+              ),
+            ),
+
+            _sectionTitle(r, 'Kuis Populer'),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              clipBehavior: Clip.none,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Image.asset(
-                    'lib/assets/images/icon22.png',
-                    width: r.w(30),
-                    height: r.w(30),
-                  ),
-                  Text(
-                    'Kuis Pilihan Ganda',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: r.sp(7),
-                      fontWeight: FontWeight.bold,
-                      color: primary,
-                    ),
-                  ),
-                  SizedBox(height: r.h(1)),
-                  Text(
-                    'Masukkan namamu untuk memulai',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: r.sp(4),
-                      color: Colors.grey.shade700,
-                    ),
-                  ),
-                  SizedBox(height: r.h(3)),
-                  TextFormField(
-                    controller: _nameController,
-                    textCapitalization: TextCapitalization.words,
-                    textInputAction: TextInputAction.done,
-                    onFieldSubmitted: (_) => _startQuiz(),
-                    style: TextStyle(fontSize: r.sp(4.2)),
-                    decoration: InputDecoration(
-                      labelText: 'Nama',
-                      hintText: 'Contoh: Budi',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(r.sp(3)),
-                      ),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: r.sp(4),
-                        vertical: r.sp(4),
+                  for (int i = 0; i < popular.length; i++)
+                    Padding(
+                      padding: EdgeInsets.only(right: gap),
+                      child: SizedBox(
+                        width: popularWidth,
+                        child: CategoryCard(
+                          category: popular[i],
+                          rank: i + 1,
+                          onTap: () => _openCategory(context, popular[i]),
+                        ),
                       ),
                     ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Nama tidak boleh kosong';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: r.h(3)),
-                  SizedBox(
-                    width: double.infinity,
-                    child: PrimaryButton(
-                      label: 'Mulai Kuis',
-                      onPressed: _startQuiz,
-                    ),
-                  ),
-                  SizedBox(height: r.h(3)),
                 ],
               ),
             ),
-          ),
+
+            _sectionTitle(r, 'Semua Kategori'),
+            Wrap(
+              spacing: gap,
+              runSpacing: r.h(1.5),
+              children: [
+                for (final category in quizCategories)
+                  SizedBox(
+                    width: gridWidth,
+                    child: CategoryCard(
+                      category: category,
+                      onTap: () => _openCategory(context, category),
+                    ),
+                  ),
+              ],
+            ),
+            SizedBox(height: r.h(3)),
+          ],
         ),
       ),
     );

@@ -1,48 +1,80 @@
 import 'package:flutter/foundation.dart';
 import '../data/data_dummy.dart';
+import '../models/history_entry.dart';
 import '../models/question.dart';
+import '../models/quiz_category.dart';
+import '../models/quiz_mode.dart';
 
 class QuizProvider extends ChangeNotifier {
-  // ---------- STATE ----------
+  QuizProvider() {
+    resetQuiz(); // siapkan soal untuk kategori default
+  }
+
   String _userName = '';
+  QuizCategory _category = quizCategories.first;
+  int _difficulty = 3;
+  QuizMode _mode = QuizMode.casual;
+
+  List<Question> _questions = [];
+  List<int?> _answers = [];
   int _currentIndex = 0;
+  bool _saved = false;
 
-  List<int?> _answers = List<int?>.filled(dummyQuestions.length, null);
+  final List<HistoryEntry> _history = [];
 
-  // ---------- GETTER ----------
+  // ---------- GETTER: pengaturan ----------
   String get userName => _userName;
+  QuizCategory get category => _category;
+  int get difficulty => _difficulty;
+  QuizMode get mode => _mode;
+
+  // ---------- GETTER: progres ----------
   int get currentIndex => _currentIndex;
-  int get totalQuestions => dummyQuestions.length;
-  Question get currentQuestion => dummyQuestions[_currentIndex];
-
-  /// Jawaban yang dipilih pada soal saat ini (null jika belum menjawab).
+  int get totalQuestions => _questions.length;
+  Question get currentQuestion => _questions[_currentIndex];
   int? get selectedAnswer => _answers[_currentIndex];
-
   bool get hasAnswered => selectedAnswer != null;
   bool get isLastQuestion => _currentIndex == totalQuestions - 1;
+  double get progress =>
+      totalQuestions == 0 ? 0 : (_currentIndex + 1) / totalQuestions;
 
-  /// Progres 0.0 sampai 1.0 untuk progress bar.
-  double get progress => (_currentIndex + 1) / totalQuestions;
-
-  /// Skor akhir = jumlah jawaban yang benar.
   int get score {
     int total = 0;
-    for (int i = 0; i < dummyQuestions.length; i++) {
-      if (_answers[i] == dummyQuestions[i].correctIndex) total++;
+    for (int i = 0; i < _questions.length; i++) {
+      if (_answers[i] == _questions[i].correctIndex) total++;
     }
     return total;
   }
 
-  /// Skor dalam skala 0 - 100.
-  int get scorePercent => ((score / totalQuestions) * 100).round();
+  int get scorePercent =>
+      totalQuestions == 0 ? 0 : ((score / totalQuestions) * 100).round();
 
-  // ---------- ACTION ----------
+  // ---------- GETTER: riwayat ----------
+  /// Riwayat terbaru di paling atas.
+  List<HistoryEntry> get history => List.unmodifiable(_history.reversed);
+
+  // ---------- ACTION: pengaturan ----------
   void setUserName(String name) {
     _userName = name.trim();
     notifyListeners();
   }
 
-  /// Simpan jawaban untuk soal saat ini.
+  void selectCategory(QuizCategory category) {
+    _category = category;
+    notifyListeners();
+  }
+
+  void setDifficulty(int value) {
+    _difficulty = value.clamp(1, 5);
+    notifyListeners();
+  }
+
+  void setMode(QuizMode mode) {
+    _mode = mode;
+    notifyListeners();
+  }
+
+  // ---------- ACTION: kuis ----------
   void selectAnswer(int optionIndex) {
     _answers[_currentIndex] = optionIndex;
     notifyListeners();
@@ -62,16 +94,39 @@ class QuizProvider extends ChangeNotifier {
     }
   }
 
-  /// Mulai ulang kuis. Nama dipertahankan agar bisa main lagi.
+  /// Susun ulang soal sesuai pengaturan saat ini dan mulai dari awal.
   void resetQuiz() {
+    _questions = questionsFor(_category.id, _difficulty);
+    _answers = List<int?>.filled(_questions.length, null);
     _currentIndex = 0;
-    _answers = List<int?>.filled(dummyQuestions.length, null);
+    _saved = false;
     notifyListeners();
   }
 
-  /// Reset total, termasuk nama (kembali ke halaman awal).
+  /// Reset total, termasuk nama dan pengaturan
   void resetAll() {
     _userName = '';
+    _category = quizCategories.first;
+    _difficulty = 3;
+    _mode = QuizMode.casual;
     resetQuiz();
+  }
+
+  /// Catat hasil ke riwayat. Aman dipanggil berulang, hanya tersimpan sekali
+  void saveToHistory() {
+    if (_saved) return;
+    _saved = true;
+    _history.add(
+      HistoryEntry(
+        userName: _userName,
+        categoryName: _category.name,
+        difficulty: _difficulty,
+        mode: _mode,
+        score: score,
+        total: totalQuestions,
+        date: DateTime.now(),
+      ),
+    );
+    notifyListeners();
   }
 }
