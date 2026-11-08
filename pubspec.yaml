@@ -30,7 +30,9 @@ flutter:
     - lib/assets/images/quiz_logo.png
     - lib/assets/images/icon22.png
     - lib/assets/images/icon33.png
-    - lib/assets/images/icon44.png 
+    - lib/assets/images/icon44.png
+    - lib/assets/images/icon55.png
+    
   fonts:
     - family: Montserrat
       fonts:
